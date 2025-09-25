@@ -27,4 +27,4 @@ Consumer-friendly drug/medication lookup app built with:
 ---
 
 ## Architecture
-- See `medical_project_deploy` repo README.md
+- See README.md file in `medical_project_deploy` repo 
