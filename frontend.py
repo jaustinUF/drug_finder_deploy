@@ -93,11 +93,11 @@ def index():
         ).classes('text-gray-600')
         ui.label('Here are some sample questions:').classes('text-gray-600')
         ui.markdown(
-            '- What is Lipitor used for?\n'
-            '- Tell me about metformin.\n'
-            '- What are the properties of ibuprofen?\n'
-            '- Is Zoloft the same as sertraline?\n'
-            '- What medications contain pseudoephedrine?'
+            '- I think the allergy med is Zertec—can you find likely matches and let me choose?\n'
+            '- All I remember is ‘omep…’ for heartburn. Show 2–5 likely matches.\n'
+            '- ibuprfen—what did I probably mean?\n'
+            '- Is Panadol the same as acetaminophen in the US? Show the generic ingredient and branded equivalents.\n'
+            '- I only know the brand Allegra—show the underlying ingredient and a couple of related products.'
         ).classes('text-gray-600')
 
         # Input box
