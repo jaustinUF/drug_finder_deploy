@@ -80,6 +80,10 @@ def index():
     is_paas = bool(os.environ.get('PORT'))
     client = ui.context.client
 
+    # --- transcript storage: keep pairs chronological; render newest-first ---
+    transcript = []          # list of dicts: {'q': str, 'a': Optional[str]}
+    pending_pairs = []       # queue of pairs awaiting response (FIFO)
+
     with ui.column().classes('w-full max-w-4xl mx-auto'):
         # Header with live status
         with ui.row().classes('items-center gap-3'):
@@ -111,9 +115,12 @@ def index():
             q = (query_box.value or '').strip()
             if not q:
                 return
-            # Clear input and show user bubble immediately
+            # Clear input; create a new pair (awaiting response)
             query_box.value = ''
-            add_user_bubble(chat_container, q)
+            new_pair = {'q': q, 'a': None}
+            transcript.append(new_pair)      # append chronologically
+            pending_pairs.append(new_pair)   # mark as awaiting reply
+            render_transcript()              # newest pair now shows at top (q only)
             spinner.visible = True
 
             # Send to backend queue
@@ -125,7 +132,10 @@ def index():
             #   see https://chatgpt.com/c/68d020ba-81f8-8326-ac2d-c92130277d59 for professional solution
             if "Error code: 429" in response: response = "Sorry, I can't continue ... rate limit exceeded"
             #      *      *      *
-            add_assistant_bubble(chat_container, response)
+            # Fill the oldest pending pair (FIFO) to keep Q/A aligned
+            if pending_pairs:
+                pending_pairs.pop(0)['a'] = response
+            render_transcript()
             if pnt: print(response)
             spinner.visible = False
 
@@ -142,8 +152,18 @@ def index():
         with ui.scroll_area().classes('w-full h-80 border rounded-lg p-3 bg-white mt-4'):
             chat_container = ui.column().classes('w-full gap-2')
 
+        # --- helper: (re)render transcript with newest pair FIRST ---
+        def render_transcript():
+            chat_container.clear()
+            for pair in reversed(transcript):
+                add_user_bubble(chat_container, pair['q'])
+                if pair.get('a') is not None:
+                    add_assistant_bubble(chat_container, pair['a'])
+
         def clear_transcript():
-            chat_container.clear() # remove all chat bubbles from the transcript area
+            transcript.clear()
+            pending_pairs.clear()
+            chat_container.clear()
             spinner.visible = False
 
         # Quit button (local mode only)
