@@ -23,7 +23,7 @@ Consumer-friendly drug/medication lookup app built with:
 - **UI:** added **Clear** button (wipe transcript), moved **Ask** for better ergonomics.
 - **Reliability:** graceful **429 rate-limit** handling; optional **tool-use audit** print; optional **history clipping** (keep recent pairs + last 1–2 tool turns).
 - **Noise control:** silenced verbose logs in the MCP server process.
-- **Transcript reversed:** newest quer/response at top of transcript.
+- **Transcript reversed:** newest query/response at top of transcript.
 ---
 
 ## Architecture
